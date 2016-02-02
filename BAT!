@@ -1,0 +1,54 @@
+//took Help from Quora
+#include<iostream>
+#include<algorithm>
+#include<cstring>
+using namespace std;
+int dp[22][1003][2],cost[22][22],rate[22][22],no,openC[22],m,k;
+int solve(int n,int budget,int ceal)
+{
+	if(n==no)return 0;
+	if(dp[n][budget][ceal]!=-1)return dp[n][budget][ceal];
+	int noceal=0,ans=0;
+	noceal=solve(n+1,budget,0);
+	if(ceal==0 and openC[n]<=budget)
+	{
+		budget-=openC[n];
+		for(int i=0;i<m;i++)
+		{
+			if(budget>=cost[n][i])
+			{
+				ans=max(ans,solve(n,budget-cost[n][i],1)+rate[n][i]);
+			}
+	
+		}
+		budget+=openC[n];
+	}
+	else if(ceal)
+	{
+		for(int i=0;i<m;i++)
+		{
+			if(budget>=cost[n][i])
+			{
+				ans=max(ans,solve(n,budget-cost[n][i],1)+rate[n][i]);
+			}
+	
+		}
+	}
+	return dp[n][budget][ceal]=max(ans,noceal);
+	
+} 
+int main()
+{
+	int t;
+	cin>>t;
+	while(t--)
+	{
+		cin>>no>>m>>k;
+		memset(dp,-1,sizeof dp);
+		for(int i=0;i<no;i++)cin>>openC[i];
+		for(int i=0;i<no;i++)for(int j=0;j<m;j++)cin>>cost[i][j];
+		for(int i=0;i<no;i++)for(int j=0;j<m;j++)cin>>rate[i][j];
+		cout<<solve(0,k,0)<<endl;
+		
+	}
+}
